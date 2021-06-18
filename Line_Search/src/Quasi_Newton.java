@@ -82,7 +82,7 @@ public class Quasi_Newton {
     }
     public static void main(String args[]) {
         double alpha=1.0;
-        double a0=1.0;
+        double a0=0.38742048900000015;
         double[] x={1.2,1.2};
         double c=0.8;
         double ro=0.5;
@@ -90,8 +90,7 @@ public class Quasi_Newton {
         double[] p_k=ComputeDirection3(x,bk);
         double k=ComputeProduct3(LineSearch.ComGrad(x),bk);
         int i=0;
-        a0=1.443614920627236E-31;
-        while(i<20000) {
+        while(i<30) {
             double[] sk=new double[2];
             double[] yk=new double[2];
             yk[0]=LineSearch.ComGrad(LineSearch.x_k_1(x,a0,p_k))[0]-LineSearch.ComGrad(x)[0];
@@ -99,7 +98,6 @@ public class Quasi_Newton {
             sk[0]=LineSearch.x_k_1(x,a0,p_k)[0]-x[0];
             sk[1]=LineSearch.x_k_1(x,a0,p_k)[1]-x[1];
             x=LineSearch.x_k_1(x,a0,p_k);
-            alpha=ro*alpha;
             //WOLFE CONDITIONS OR GOLDSTEIN CONDITIONS HERE
             bk=ComputeB_k_1(bk,sk,yk);
             p_k=ComputeDirection3(x,bk);

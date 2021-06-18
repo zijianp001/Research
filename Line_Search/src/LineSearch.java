@@ -111,12 +111,13 @@ public class LineSearch {
             x = x_k_1(x, a0, p_k);
             p_k = ComputeDirection1(x);
             i++;
-            if(Math.abs(x[0]-1)<0.05 && Math.abs(x[1]-1)<0.05) {
-                break;
-            }
         }
-            System.out.println(ComGrad(x)[0] + " " + ComGrad(x)[1]);
-            System.out.println(x[0] + " " + x[1] + " " + i);
+            //System.out.println(ComGrad(x)[0] + " " + ComGrad(x)[1]);
+            System.out.println("This is the answer for steepest descent "+ x[0] + " " + x[1] + " " + i);
+        System.out.println(FunctionValue(x));
+
+
+
 
         alpha=1.0;
         a0=1.0;
@@ -130,16 +131,23 @@ public class LineSearch {
             alpha=ro*alpha;
             j++;
         }
-        while (i < 10000000) {
+        while (i < 30000000) {
             x = x_k_1(x, a0, p_k);
-            p_k = ComputeDirection2(x);
+            double bk[][]=LineSearch.ComputeHessian(x);
+            bk[0][0]=bk[0][0]+1000;
+            bk[0][1]=bk[0][1]+1000;
+            bk[1][0]=bk[1][0]+1000;
+            bk[1][1]=bk[1][1]+1000;
+            p_k = Quasi_Newton.ComputeDirection3(x,bk);
             i++;
-            if(x[0]==1.0 && x[1]==1.0) {
-                break;
-            }
         }
-        System.out.println(ComGrad(x)[0] + " " + ComGrad(x)[1]);
-        System.out.println(x[0] + " " + x[1] + " " + i);
+
+        //System.out.println(ComGrad(x)[0] + " " + ComGrad(x)[1]);
+        System.out.println("This is the answer for Newton direction " + x[0] + " " + x[1] + " " + i);
+        System.out.println(FunctionValue(x));
+
+
+
 
 
 
@@ -152,26 +160,11 @@ public class LineSearch {
         double bk[][]=LineSearch.ComputeHessian(x);
         p_k=Quasi_Newton.ComputeDirection3(x,bk);
         j=0;
-        while(FunctionValue(x_k_1(x,alpha,p_k))>(FunctionValue(x)+c*alpha*Quasi_Newton.ComputeProduct3(ComGrad(x),bk))) {
+        while(FunctionValue(x_k_1(x,alpha,p_k))>(FunctionValue(x)+c*alpha*Quasi_Newton.ComputeProduct3(x,bk))) {
             alpha=ro*alpha;
             j++;
         }
         System.out.println(alpha);
-        a0=alpha;
-        while(i<2) {
-            double[] sk=new double[2];
-            double[] yk=new double[2];
-            yk[0]=LineSearch.ComGrad(LineSearch.x_k_1(x,a0,p_k))[0]-LineSearch.ComGrad(x)[0];
-            yk[1]=LineSearch.ComGrad(LineSearch.x_k_1(x,a0,p_k))[1]-LineSearch.ComGrad(x)[1];
-            sk[0]=LineSearch.x_k_1(x,a0,p_k)[0]-x[0];
-            sk[1]=LineSearch.x_k_1(x,a0,p_k)[1]-x[1];
-            x=LineSearch.x_k_1(x,a0,p_k);
-            bk=Quasi_Newton.ComputeB_k_1(bk,sk,yk);
-            p_k=Quasi_Newton.ComputeDirection3(x,bk);
-            i++;
-        }
-        System.out.println(ComGrad(x)[0] + " " + ComGrad(x)[1]);
-        System.out.println(x[0] + " " + x[1] + " " + i);
         }
 
 
